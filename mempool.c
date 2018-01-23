@@ -1,10 +1,13 @@
-/* mempool.c -- Memory pool with fixed size_of_block, 16 byte alligned.
+/* mempool.c -- Memory pool with fixed blocksize, 16 byte alligned.
  *
- * blockindexes are zero based.
+ *              Uses system allocation (malloc) when the pool is full or
+ *              data size is larger than a block.
  */
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "mempool.h"
 
 
 typedef unsigned char uchar;
@@ -25,7 +28,7 @@ struct memPool {
 static memPool* mp = 0;
 
 
-void mp_create(size_t size_of_block, uint nr_of_blocks) {
+void mp_create(size_t size_of_block, size_t nr_of_blocks) {
 
   /*** Allign to 16 byte multiples ***/
   size_of_block =   size_of_block + 15 & ~0x0F;
